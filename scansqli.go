@@ -27,9 +27,9 @@ func isVulnerable(resp *http.Response, toXss bool) (bool, bool) {
 			"alert(String.fromCharCode(88,83,83))//–",
 			"></SCRIPT>”>’><SCRIPT>alert(String.fromCharCode(88,83,83))</SCRIPT>"}
 	}
-	xframeopt := resp.Header.Values("X-Frame-Options")
+	xframeopt := string(resp.Header.Get("X-Frame-Options"))
 	_isVulnerableToSqliOrXss := false
-	_isVulnerableToClickJacking := (len(xframeopt) < 1 || xframeopt[0] == "ALLOW" || xframeopt[0] == "allow" || xframeopt[0] == "*")
+	_isVulnerableToClickJacking := (len(xframeopt) < 1 || xframeopt == "ALLOW" || xframeopt == "allow" || xframeopt == "*")
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		panic(err)
