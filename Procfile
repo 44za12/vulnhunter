@@ -1,1 +1,1 @@
-“web: vulnhunter”
+web: vulnhunter
