@@ -7,12 +7,14 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strings"
 )
 
 type Row struct {
 	URL                 string `json:"url"`
 	Method              string `json:"method"`
 	SQLiVulnerable      bool   `json:"sqlivulnerable"`
+	VulnerableParams    string `json:"vulnerableparams"`
 	XSSVulnerable       bool   `json:"xssvulnerable"`
 	ClickJackVulnerable bool   `json:"clickjackvulnerable"`
 }
@@ -37,17 +39,21 @@ func envChecks() {
 func getTableArray(baseUrl string) []Row {
 	var allRows []Row
 	sitemapget, sitemappost := crawlUrls(baseUrl)
-	for i, _ := range sitemapget {
+	for i, v := range sitemapget {
 		if i == "" {
 			continue
 		}
 		_isVulnerableToSqli := scanForSqli(i)
 		_isVulnerableToXSS := scanForXSS(i)
 		_isVulnerableToClickJack := scanForClickJack(i)
+		if !_isVulnerableToSqli {
+			v = ""
+		}
 		row := Row{
 			URL:                 i,
 			Method:              "GET",
 			SQLiVulnerable:      _isVulnerableToSqli,
+			VulnerableParams:    v,
 			XSSVulnerable:       _isVulnerableToXSS,
 			ClickJackVulnerable: _isVulnerableToClickJack,
 		}
@@ -58,10 +64,14 @@ func getTableArray(baseUrl string) []Row {
 			_isVulnerableToSqliForm := scanForSqliForm(i, v)
 			_isVulnerableToXSS := scanForXSSForm(i, v)
 			_isVulnerableToClickJack := scanForClickJack(i)
+			if !_isVulnerableToSqliForm {
+				v = []string{}
+			}
 			row := Row{
 				URL:                 i,
 				Method:              "POST",
 				SQLiVulnerable:      _isVulnerableToSqliForm,
+				VulnerableParams:    strings.Join(v, ", "),
 				XSSVulnerable:       _isVulnerableToXSS,
 				ClickJackVulnerable: _isVulnerableToClickJack,
 			}

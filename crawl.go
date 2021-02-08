@@ -39,7 +39,11 @@ func crawlUrls(baseUrl string) (map[string]string, map[string][]string) {
 			}
 		}
 		path = strings.TrimSpace(path)
-		sitemapget[path] = "get"
+		if strings.Contains(path, "?") {
+			sitemapget[path] = strings.SplitAfter(path, "?")[1]
+		} else {
+			sitemapget[path] = ""
+		}
 		e.Request.Visit(link)
 	})
 	c.OnHTML("form", func(e *colly.HTMLElement) {
