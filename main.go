@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 )
 
 type Row struct {
@@ -18,6 +19,19 @@ type Row struct {
 
 type u struct {
 	Url string `json:"url"`
+}
+
+func init() {
+	//Check ENV variables.
+	envChecks()
+}
+
+func envChecks() {
+	port, portExist := os.LookupEnv("PORT")
+
+	if !portExist || port == "" {
+		log.Fatal("PORT must be set in .env and not empty")
+	}
 }
 
 func getTableArray(baseUrl string) []Row {
@@ -93,6 +107,7 @@ func main() {
 	http.HandleFunc("/", index)
 	http.HandleFunc("/getdata", api)
 	fmt.Printf("Starting server for testing HTTP POST...\n")
-	log.Fatal(http.ListenAndServe(":8081", nil))
+	port := os.Getenv("PORT")
+	log.Fatal(http.ListenAndServe(":"+port, nil))
 
 }
