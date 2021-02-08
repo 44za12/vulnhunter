@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.20/datatables.min.css" />
+    <title>VulnHunter</title>
+</head>
+<body>
+    <style>
+        /* Sticky footer styles
+-------------------------------------------------- */
+html {
+  position: relative;
+  min-height: 100%;
+}
+body {
+  /* Margin bottom by footer height */
+  margin-bottom: 60px;
+}
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  text-align: center;
+  /* Set the fixed height of the footer here */
+  height: 60px;
+  line-height: 60px; /* Vertically center the text there */
+}
+
+
+/* Custom page CSS
+-------------------------------------------------- */
+/* Not required for template or sticky footer method. */
+
+body > .container {
+  padding: 60px 15px 0;
+}
+
+code {
+  font-size: 80%;
+}
+
+
+    </style>
+    <header>
+        <!-- Fixed navbar -->
+        <nav class="navbar navbar-expand-md navbar-primary fixed-top">
+          <a class="navbar-brand" href="#">Vuln Hunter</a>
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav mr-auto">
+              <li class="nav-item active">
+                <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="https://hireaazar.com" target="_blank">Contact</a>
+              </li>
+            </ul>
+          </div>
+        </nav>
+      </header>
+      <main role="main" class="container" id="main">
+          <img src="/static/ascii.png" class="img-fluid">
+          <p class="text-center text-primary">
+              A lightweight and lightening fast utility to scan a url for vulnerabilties, currently works fine for SQLi vulnerabilities and ClickJacking vulnerabilities. Written in pure GoLang.
+          </p>
+        <form name="urlform" id="urlform" class="form-inline mb-4" action="" method="POST" onsubmit="event.preventDefault();populateData();">
+            <input class="form-control col-10" id="url" name="url" type="text" required type="url" pattern="https?://.+" placeholder="Enter a URL starting with http:// or https:// to scan ">
+            <button class="btn btn-outline-success col-2" type="submit">Scan</button>
+        </form>
+        <table id="myTable" class="text-primary mt-4"></table>
+        <div id="loadingLabel" style="display: none;"><img src="https://gifimage.net/wp-content/uploads/2017/06/loading-gif-14.gif" class="img-fluid" alt="" srcset=""></div> 
+        <!-- <div class="spinner-grow" role="status">
+          <span class="sr-only">Loading...</span>
+        </div> -->
+      </main>
+      <footer class="footer text-primary">
+        <span>Made with ♡ by Aazar!</span>
+      </footer>
+      <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+      <script src="/static/bootstrap.min.js"></script>
+      <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.20/datatables.min.js"></script>
+    <script>
+      const populateData = async() => {
+        $('#loadingLabel').show();
+      let reqdata = {
+        url: document.getElementById("url").value
+      };
+      console.log(reqdata)
+      let response = await fetch('getdata', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json;charset=utf-8'
+        },
+        body: JSON.stringify(reqdata)
+      });
+      let result = await response.json();
+      console.log(result)
+      $('#loadingLabel').hide();
+      $('#myTable').DataTable({
+        data: result,
+        bLengthChange: false,
+        columns: [
+          { data: 'url', title: 'URL' },
+          { data: 'method', title: 'Method' },
+          { data: 'sqlivulnerable', title: 'SQLi Vulnerable' },
+          { data: 'xssvulnerable', title: 'XSS Vulnerable' },
+          { data: 'clickjackvulnerable', title: 'ClickJack Vulnerable' }
+        ]
+      });
+    };
+    $('#myTable_wrapper').addClass("mt-4")
+    </script>
+    
+</body>
+</html>
