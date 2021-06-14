@@ -67,8 +67,11 @@ code {
       <main role="main" class="container" id="main">
           <img src="/static/ascii.png" class="img-fluid">
           <p class="text-center text-primary">
-              A lightweight and lightening fast utility to scan a url for vulnerabilties, currently works fine for SQLi vulnerabilities and ClickJacking vulnerabilities. Written in pure GoLang.
+              A utility to scan a website for vulnerabilties, currently works fine for SQLi vulnerabilities and ClickJacking vulnerabilities. Written in pure GoLang.
           </p>
+          <p class="text-center text-danger">
+            NOTE: It currently works best for small webapps / websites. Test <code>http://testphp.vulnweb.com/</code> for quick results demo. For bigger webapps it can take a lot of time, as it is hosted on heroku and also because it needs optimisation.
+        </p>
         <form name="urlform" id="urlform" class="form-inline mb-4" action="" method="POST" onsubmit="event.preventDefault();populateData();">
             <input class="form-control col-10" id="url" name="url" type="text" required type="url" pattern="https?://.+" placeholder="Enter a URL starting with http:// or https:// to scan ">
             <button class="btn btn-outline-success col-2" type="submit">Scan</button>
